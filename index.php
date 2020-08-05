@@ -43,7 +43,6 @@ session_start();
                         <label for="amount">Currency FROM</label>
                         <select id="from" name="from"  class="form-control">
                             <option>USD</option>
-
                         </select>
                     </div>
                 </div>
