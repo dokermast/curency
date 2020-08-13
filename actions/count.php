@@ -2,10 +2,10 @@
 
 
 require_once 'functions.php';
-require_once 'classes/Action.php';
-require_once 'classes/Db.php';
+require_once '../classes/Action.php';
+require_once '../classes/Db.php';
 
-$params = include "config/config.php";
+$params = include "../config/config.php";
 
 if(isset($_POST) && count($_POST)>0 ) {
 

@@ -1,8 +1,9 @@
 $(document).ready(function() {
 
+    /* get history row count from session */
     $.ajax({
         type: "GET",
-        url: 'getsession.php',
+        url: 'sessions/getsession.php',
         success: function (data) {
             console.log(data);
             if(data){
@@ -15,22 +16,39 @@ $(document).ready(function() {
         }
     });
 
-
+    /* get currencies for conversion */
     $.ajax({
         type: "GET",
-        url: 'currencies.php',
+        url: 'actions/currencies.php',
+        dataType: 'json',
         success: function (data) {
-            $("#from").append(data);
-            $("#to").append(data);
+            // console.log(data);
+            data.forEach(function(el) {
+                $("#from").append( '<option>' + el + '</option>');
+                $("#to").append( '<option>' + el + '</option>');
+            });
         },
         error: function (data) {
             console.log('Errror');
         }
     });
 
+    /* get currencies list for select */
     $.ajax({
         type: "GET",
-        url: 'actions.php',
+        url: 'actions/currs.php',
+        success: function (data) {
+            $("#cur-list").append(data);
+        },
+        error: function (data) {
+            console.log('Errror');
+        }
+    });
+
+    /* put data to  history table */
+    $.ajax({
+        type: "GET",
+        url: 'actions/actions.php',
         success: function (data) {
             if(data){
                 $('#no_data').hide();
@@ -44,19 +62,16 @@ $(document).ready(function() {
         }
     });
 
-
+    /* count conversion result */
     $('#submit').click(function(){
-
         amount = $('#amount').val();
         amount_el = $('#amount');
         from = $('#from').val();
         to = $('#to').val();
-
         if (checkInput(amount, '#amount')){
-
             $.ajax({
                 type: "POST",
-                url: 'count.php',
+                url: 'actions/count.php',
                 data: {
                     amount: amount,
                     from: from,
@@ -80,10 +95,11 @@ $(document).ready(function() {
         }
     });
 
+
     function getActions(){
         $.ajax({
             type: "GET",
-            url: 'actions.php',
+            url: 'actions/actions.php',
             success: function (data) {
                 $("#table_body").empty();
                 $("#table_body").append(data);
@@ -94,10 +110,10 @@ $(document).ready(function() {
         });
     }
 
+
     function checkInput(input, selector){
 
         if( input !== ""){
-
             $(selector).css('border', '1px solid #ced4da');
 
             return true;
@@ -108,6 +124,7 @@ $(document).ready(function() {
         }
     }
 
+    /* set how many history rows should to display in the History table */
     $('#history_button').click(function(){
 
         history_rows = $('#history_rows').val();
@@ -116,17 +133,16 @@ $(document).ready(function() {
 
             $.ajax({
                 type: "POST",
-                url: 'setsession.php',
+                url: 'sessions/setsession.php',
                 data: {
                     history: history_rows,
                 },
                 success: function (data) {
-
                     $('#history_rows').css('border', '1px solid #ced4da');
-                    console.log("HISTORY");
+                    location.reload();
                 },
                 error: function (data) {
-                    console.log('Errror');
+                    console.log('Errror History');
                 }
             });
 
@@ -135,4 +151,33 @@ $(document).ready(function() {
             $('#history_rows').css('border',"3px solid #dc3545");
         }
     });
+
+
+    /*  get selected currencies */
+    $('#select-curr').click( function(){
+        $('#div-cur-list').hide();
+
+        var checks = [];
+        $('input.form-check-input').each(function () {
+            box = this.checked ? $(this).val() : "";
+            if (box !== ''){
+                checks.push(box);
+            }
+        });
+        $.ajax({
+            type: "POST",
+            url: 'sessions/setcursession.php',
+            data: {
+                checks: checks,
+            },
+            success: function (data) {
+                // console.log(data);
+                location.reload();
+            },
+            error: function (data) {
+                console.log('Errror');
+            }
+        });
+    });
+    
 });

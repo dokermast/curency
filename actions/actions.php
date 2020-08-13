@@ -1,7 +1,7 @@
 <?php
 
-require_once 'classes/Action.php';
-require_once 'classes/Db.php';
+require_once '../classes/Action.php';
+require_once '../classes/Db.php';
 session_start();
 
 
